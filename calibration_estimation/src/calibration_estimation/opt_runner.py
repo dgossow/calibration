@@ -42,6 +42,7 @@ import scipy.optimize
 import sys
 import rospy
 from visualization_msgs.msg import Marker, MarkerArray
+from std_msgs.msg import ColorRGBA
 import geometry_msgs.msg
 
 class ErrorCalc:
@@ -89,22 +90,23 @@ class ErrorCalc:
             else:
                 r_list.append(multisensor.compute_residual(cb_points))
 
-            cb_points_msgs = [ geometry_msgs.msg.Point(cur_pt[0,0], cur_pt[0,1], cur_pt[0,2]) for cur_pt in cb_points.T]   
+            cb_points_msgs = [ geometry_msgs.msg.Point(cur_pt[0,0], cur_pt[0,1], cur_pt[0,2]) for cur_pt in cb_points.T]
+            cb_colors_msgs = [ ColorRGBA(1,0,1,1) for cur_pt in cb_points.T]
+            cb_colors_msgs[0] = ColorRGBA(0,1,0,1)
+            cb_colors_msgs[1] = ColorRGBA(0,1,0,1)
             
             m = Marker()
-            m.header.frame_id = self._robot_params.base_link
+            m.header.frame_id = self._robot_params.base_link 
+            m.pose.orientation.w = 1;
             m.ns = "points_3d"
             m.id = id
             m.type = Marker.SPHERE_LIST
             m.action = Marker.MODIFY
             m.points = cb_points_msgs
-            m.color.r = 1.0
-            m.color.g = 0.0
-            m.color.b = 1.0
-            m.color.a = 1.0
-            m.scale.x = 0.01
-            m.scale.y = 0.01
-            m.scale.z = 0.01
+            m.colors = cb_colors_msgs
+            m.scale.x = 0.02
+            m.scale.y = 0.02
+            m.scale.z = 0.02
             self.marker_pub.publish(m)
             id += 1
                 

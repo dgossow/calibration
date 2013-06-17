@@ -94,12 +94,12 @@ void ImageAnnotator::processPair(const sensor_msgs::ImageConstPtr& image, const 
     {
       cv::Point2i pt0(features->image_points[0].x*scaling_, 
             features->image_points[0].y*scaling_);
-      cv::circle(cv_image_scaled, pt0, marker_size_*2, cvScalar(0,0,255), 1) ;
       for (unsigned int i=0; i<features->image_points.size(); i++)
       {
         cv::Point2i pt(features->image_points[i].x*scaling_, 
               features->image_points[i].y*scaling_);
-        cv::circle(cv_image_scaled, pt, marker_size_, cvScalar(0,255,0), 1) ;
+        cv::Scalar color = i<2 ? cvScalar(0,255,0) : cvScalar(255,0,255);
+        cv::circle(cv_image_scaled, pt, marker_size_, color, 1) ;
       }
     }
     else
